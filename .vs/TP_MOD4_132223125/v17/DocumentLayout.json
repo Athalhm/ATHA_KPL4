@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\codingan\\TP_MOD4_132223125_KPL\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E78AE1C8-440F-4C83-B92C-21121311FE47}|TP_MOD4_1302223125\\TP_MOD4_1302223125.csproj|d:\\codingan\\tp_mod4_132223125_kpl\\tp_mod4_1302223125\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E78AE1C8-440F-4C83-B92C-21121311FE47}|TP_MOD4_1302223125\\TP_MOD4_1302223125.csproj|solutionrelative:tp_mod4_1302223125\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\codingan\\TP_MOD4_132223125_KPL\\TP_MOD4_1302223125\\Program.cs",
+              "RelativeDocumentMoniker": "TP_MOD4_1302223125\\Program.cs",
+              "ToolTip": "D:\\codingan\\TP_MOD4_132223125_KPL\\TP_MOD4_1302223125\\Program.cs",
+              "RelativeToolTip": "TP_MOD4_1302223125\\Program.cs",
+              "ViewState": "AQIAACkAAAAAAAAAAAAwwDMAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-12T15:00:25.961Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
