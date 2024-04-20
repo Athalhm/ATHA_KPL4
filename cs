@@ -1,75 +1,50 @@
-using System;
+using System.IO;
+using Newtonsoft.Json;
 
-public class BankTransferApp
+public class BankTransferConfig
 {
-    private BankTransferConfig config;
+    public string Lang { get; set; }
+    public int Threshold { get; set; }
+    public int LowFee { get; set; }
+    public int HighFee { get; set; }
+    public string[] Methods { get; set; }
+    public Confirmation ConfirmationInfo { get; set; }
 
-    public BankTransferApp(BankTransferConfig config)
+    public class Confirmation
     {
-        this.config = config;
+        public string En { get; set; }
+        public string Id { get; set; }
     }
 
-    public void Run()
+    public BankTransferConfig()
     {
-        string lang = config.Lang;
-
-        // Menampilkan pesan berdasarkan bahasa
-        string insertMessage = lang == "en" ? "Please insert the amount of money to transfer:" : "Masukkan jumlah uang yang akan di-transfer:";
-        Console.WriteLine(insertMessage);
-        int transferAmount = Convert.ToInt32(Console.ReadLine());
-
-        // Menghitung biaya transfer
-        int transferFee = transferAmount <= config.Threshold ? config.LowFee : config.HighFee;
-        int totalAmount = transferAmount + transferFee;
-
-        // Menampilkan biaya transfer dan total biaya
-        string feeMessage = lang == "en" ? "Transfer fee = " : "Biaya transfer = ";
-        string totalMessage = lang == "en" ? "Total amount = " : "Total biaya = ";
-        Console.WriteLine($"{feeMessage}{transferFee}");
-        Console.WriteLine($"{totalMessage}{totalAmount}");
-
-        // Menampilkan pesan untuk memilih metode transfer
-        string selectMessage = lang == "en" ? "Select transfer method:" : "Pilih metode transfer:";
-        Console.WriteLine(selectMessage);
-
-        // Menampilkan metode transfer dari konfigurasi
-        string[] methods = config.Methods;
-        for (int i = 0; i < methods.Length; i++)
-        {
-            Console.WriteLine($"{i + 1}. {methods[i]}");
-        }
-
-        // Meminta konfirmasi transaksi
-        string confirmationMessage = lang == "en" ? $"Please type \"{config.Confirmation.En}\" to confirm the transaction:" : $"Ketik \"{config.Confirmation.Id}\" untuk mengkonfirmasi transaksi:";
-        Console.WriteLine(confirmationMessage);
-        string confirmationInput = Console.ReadLine();
-
-        // Memproses konfirmasi
-        string successMessage = lang == "en" ? "The transfer is completed" : "Proses transfer berhasil";
-        string cancelMessage = lang == "en" ? "Transfer is cancelled" : "Transfer dibatalkan";
-        string confirmationCode = lang == "en" ? config.Confirmation.En : config.Confirmation.Id;
-        if (confirmationInput == confirmationCode)
-        {
-            Console.WriteLine(successMessage);
-        }
-        else
-        {
-            Console.WriteLine(cancelMessage);
-        }
+        LoadConfig();
     }
-}
 
-class Program
-{
-    static void Main(string[] args)
+    private void LoadConfig()
     {
-        // Membuat objek BankTransferConfig
-        BankTransferConfig bankConfig = new BankTransferConfig();
+        try
+        {
+            using (StreamReader r = new StreamReader("bank_transfer_config.json"))
+            {
+                string json = r.ReadToEnd();
+                dynamic configData = JsonConvert.DeserializeObject(json);
 
-        // Membuat objek BankTransferApp dengan menggunakan BankTransferConfig
-        BankTransferApp bankApp = new BankTransferApp(bankConfig);
-
-        // Menjalankan aplikasi
-        bankApp.Run();
+                Lang = configData.lang != null ? configData.lang : "en";
+                Threshold = configData.transfer != null && configData.transfer.threshold != null ? (int)configData.transfer.threshold : 25000000;
+                LowFee = configData.transfer != null && configData.transfer.low_fee != null ? (int)configData.transfer.low_fee : 6500;
+                HighFee = configData.transfer != null && configData.transfer.high_fee != null ? (int)configData.transfer.high_fee : 15000;
+                Methods = configData.methods != null ? configData.methods.ToObject<string[]>() : new string[] { "RTO (real-time)", "SKN", "RTGS", "BI FAST" };
+                ConfirmationInfo = new Confirmation
+                {
+                    En = configData.confirmation != null && configData.confirmation.en != null ? configData.confirmation.en : "yes",
+                    Id = configData.confirmation != null && configData.confirmation.id != null ? configData.confirmation.id : "ya"
+                };
+            }
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("Configuration file not found. Using default values.");
+        }
     }
 }
