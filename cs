@@ -21,24 +21,25 @@ public class BankTransferConfig
         LoadConfig();
     }
 
-    private void LoadConfig()
+     private void LoadConfig()
     {
         try
         {
-            using (StreamReader r = new StreamReader("bank_transfer_config.json"))
+            using (StreamReader r = new StreamReader(filePath))
             {
                 string json = r.ReadToEnd();
-                dynamic configData = JsonConvert.DeserializeObject(json);
+                JsonDocument document = JsonDocument.Parse(json);
 
-                Lang = configData.lang != null ? configData.lang : "en";
-                Threshold = configData.transfer != null && configData.transfer.threshold != null ? (int)configData.transfer.threshold : 25000000;
-                LowFee = configData.transfer != null && configData.transfer.low_fee != null ? (int)configData.transfer.low_fee : 6500;
-                HighFee = configData.transfer != null && configData.transfer.high_fee != null ? (int)configData.transfer.high_fee : 15000;
-                Methods = configData.methods != null ? configData.methods.ToObject<string[]>() : new string[] { "RTO (real-time)", "SKN", "RTGS", "BI FAST" };
-                ConfirmationInfo = new Confirmation
+                JsonElement root = document.RootElement;
+                Lang = root.GetProperty("lang").GetString();
+                Threshold = root.GetProperty("transfer").GetProperty("threshold").GetInt32();
+                LowFee = root.GetProperty("transfer").GetProperty("low_fee").GetInt32();
+                HighFee = root.GetProperty("transfer").GetProperty("high_fee").GetInt32();
+                Methods = root.GetProperty("methods").EnumerateArray().Select(x => x.GetString()).ToArray();
+                Confirmation = new Confirmation
                 {
-                    En = configData.confirmation != null && configData.confirmation.en != null ? configData.confirmation.en : "yes",
-                    Id = configData.confirmation != null && configData.confirmation.id != null ? configData.confirmation.id : "ya"
+                    En = root.GetProperty("confirmation").GetProperty("en").GetString(),
+                    Id = root.GetProperty("confirmation").GetProperty("id").GetString()
                 };
             }
         }
